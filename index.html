@@ -2,8 +2,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kenya Jobs & Side Hustles</title>
-  <style>
+  <title>Kenya Jobs & Side Hustles</title>  <!-- PWA Meta Tags -->  <meta name="theme-color" content="#0a66c2">
+  <link rel="manifest" href="manifest.json">  <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -25,12 +25,8 @@
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    .job h3 {
-      margin: 0;
-    }
-    .job p {
-      margin: 5px 0;
-    }
+    .job h3 { margin: 0; }
+    .job p { margin: 5px 0; }
     .btn {
       display: inline-block;
       padding: 8px 12px;
@@ -50,12 +46,12 @@
       padding: 10px;
       margin: 8px 0;
     }
-  </style>
-</head>
+  </style></head>
 <body><header>
   <h1>Kenya Jobs & Side Hustles</h1>
   <p>Find daily jobs, gigs & opportunities</p>
-</header><div class="container">  <h2>Latest Opportunities</h2>  <div id="jobs"></div>  <h2>Post a Job</h2>
+</header><div class="container">  <h2>Latest Opportunities</h2>
+  <div id="jobs"></div>  <h2>Post a Job</h2>
   <form id="jobForm">
     <input type="text" id="title" placeholder="Job Title" required>
     <input type="text" id="company" placeholder="Company / Person" required>
@@ -70,7 +66,7 @@
 
   function displayJobs() {
     jobsContainer.innerHTML = '';
-    jobs.forEach((job, index) => {
+    jobs.forEach(job => {
       jobsContainer.innerHTML += `
         <div class="job">
           <h3>${job.title}</h3>
@@ -82,14 +78,14 @@
     });
   }
 
-  jobForm.addEventListener('submit', function(e) {
+  jobForm.addEventListener('submit', e => {
     e.preventDefault();
 
     const job = {
-      title: document.getElementById('title').value,
-      company: document.getElementById('company').value,
-      description: document.getElementById('description').value,
-      link: document.getElementById('link').value
+      title: title.value,
+      company: company.value,
+      description: description.value,
+      link: link.value
     };
 
     jobs.push(job);
@@ -100,5 +96,28 @@
   });
 
   displayJobs();
+
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registered'))
+        .catch(err => console.log('SW error', err));
+    });
+  }
 </script></body>
-</html>
+</html><!-- ===================== PWA FILES (CREATE THESE SEPARATELY) ===================== --><!-- manifest.json -->{ "name": "Kenya Jobs & Side Hustles", "short_name": "Kenya Jobs", "start_url": "/", "display": "standalone", "background_color": "#f4f4f4", "theme_color": "#0a66c2", "icons": [ { "src": "icon.png", "sizes": "192x192", "type": "image/png" } ] }
+
+<!-- sw.js (Service Worker) -->const CACHE_NAME = "kenya-jobs-cache-v1"; const urlsToCache = [ "/", "/index.html" ];
+
+self.addEventListener('install', event => { event.waitUntil( caches.open(CACHE_NAME) .then(cache => cache.addAll(urlsToCache)) ); });
+
+self.addEventListener('fetch', event => { event.respondWith( caches.match(event.request) .then(response => response || fetch(event.request)) ); });
+
+<!-- ===================== HOW IT WORKS ===================== --><!--
+1. Upload index.html, manifest.json, sw.js to GitHub repo
+2. Add an icon.png (192x192)
+3. Enable GitHub Pages
+4. Open site in Chrome mobile
+5. You will see "Install App" popup automatically
+-->
