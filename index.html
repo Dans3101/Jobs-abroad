@@ -1,114 +1,124 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kenya Jobs & Side Hustles</title>  <!-- PWA META -->  <meta name="theme-color" content="#0a66c2">
-  <link rel="manifest" href="manifest.json">  <style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kenya Jobs & Side Hustles</title>  <!-- PWA LINKS -->  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a66c2">  <style>
     body{font-family:Arial;margin:0;background:#f4f4f4}
-    header{background:#0a66c2;color:#fff;padding:15px;text-align:center}
-    .container{padding:15px}
-    .card{background:#fff;padding:15px;margin-bottom:12px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-    .btn{background:#0a66c2;color:#fff;padding:8px 12px;border:none;border-radius:5px;cursor:pointer;text-decoration:none;display:inline-block}
-    input,select,textarea{width:100%;padding:10px;margin:6px 0}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .hidden{display:none}
-    nav{display:flex;justify-content:space-around;background:#fff;padding:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+    header{background:#0a66c2;color:white;padding:15px;text-align:center}
+    nav{display:flex;justify-content:space-around;background:white;padding:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
     nav button{border:none;background:none;font-weight:bold;cursor:pointer}
+    .container{padding:15px}
+    .card{background:white;padding:15px;margin-bottom:12px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+    .btn{background:#0a66c2;color:white;padding:8px 12px;border:none;border-radius:5px;cursor:pointer;text-decoration:none;display:inline-block;margin-top:5px}
+    input,textarea,select{width:100%;padding:10px;margin:6px 0}
+    .hidden{display:none}
   </style></head>
 <body><header>
-  <h2>Kenya Jobs Platform</h2>
+  <h2>Kenya Jobs & Side Hustles</h2>
 </header><nav>
   <button onclick="showPage('home')">Jobs</button>
   <button onclick="showPage('post')">Post Job</button>
   <button onclick="showPage('saved')">Saved</button>
-  <button onclick="showPage('profile')">Profile</button>
-</nav><div class="container"><!-- LOGIN --><div id="authPage" class="card">
+  <button onclick="showPage('auth')">Login</button>
+</nav><div class="container"><!-- AUTH --><div id="auth" class="card">
   <h3>Login / Register</h3>
-  <input id="email" placeholder="Email">
+  <input id="email" type="email" placeholder="Email">
   <input id="password" type="password" placeholder="Password">
-  <button class="btn" onclick="register()">Register</button>
-  <button class="btn" onclick="login()">Login</button>
-</div><!-- HOME --><div id="home" class="page hidden">
-  <h3>Job Listings</h3>
+  <button class="btn" onclick="registerUser()">Register</button>
+  <button class="btn" onclick="loginUser()">Login</button>
+</div><!-- HOME --><div id="home" class="hidden">
+  <h3>Available Jobs</h3>
   <input id="search" placeholder="Search jobs..." onkeyup="renderJobs()">
   <select id="category" onchange="renderJobs()">
-    <option value="all">All Categories</option>
+    <option value="all">All</option>
     <option>IT</option>
     <option>Marketing</option>
     <option>Remote</option>
     <option>Internship</option>
   </select>
   <div id="jobs"></div>
-</div><!-- POST JOB --><div id="post" class="page hidden card">
+</div><!-- POST --><div id="post" class="hidden card">
   <h3>Post Job</h3>
   <input id="title" placeholder="Job Title">
   <input id="company" placeholder="Company">
-  <input id="jobCategory" placeholder="Category">
+  <select id="jobCat">
+    <option>IT</option>
+    <option>Marketing</option>
+    <option>Remote</option>
+    <option>Internship</option>
+  </select>
   <textarea id="desc" placeholder="Description"></textarea>
   <input id="link" placeholder="Apply Link">
-  <button class="btn" onclick="postJob()">Submit</button>
-</div><!-- SAVED --><div id="saved" class="page hidden card">
+  <button class="btn" onclick="addJob()">Post Job</button>
+</div><!-- SAVED --><div id="saved" class="hidden">
   <h3>Saved Jobs</h3>
-  <div id="savedJobs"></div>
-</div><!-- PROFILE --><div id="profile" class="page hidden card">
-  <h3>User Profile</h3>
-  <p id="userInfo"></p>
-  <button class="btn" onclick="logout()">Logout</button>
+  <div id="savedList"></div>
 </div></div><script>
-let currentUser = null;
 let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
 let saved = JSON.parse(localStorage.getItem("saved")) || [];
+let currentUser = JSON.parse(localStorage.getItem("user")) || null;
 
-function showPage(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
-  document.getElementById(page).classList.remove('hidden');
+function showPage(id){
+  document.querySelectorAll(".container > div").forEach(d=>d.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
 }
 
-function register(){
-  let u = {email:email.value,password:password.value};
-  localStorage.setItem('user',JSON.stringify(u));
-  alert("Registered!");
+function registerUser(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  if(!email || !password) return alert("Fill all fields");
+
+  let user = {email,password};
+  localStorage.setItem("user", JSON.stringify(user));
+  alert("Registered successfully");
 }
 
-function login(){
-  let u = JSON.parse(localStorage.getItem('user'));
-  if(u && u.email==email.value && u.password==password.value){
-    currentUser=u;
-    document.getElementById('authPage').style.display='none';
+function loginUser(){
+  let email = document.getElementById("email").value;
+  let password = document.getElementById("password").value;
+
+  let user = JSON.parse(localStorage.getItem("user"));
+
+  if(user && user.email === email && user.password === password){
+    currentUser = user;
+    alert("Login successful");
     showPage('home');
     renderJobs();
-  }else alert("Invalid login");
+  } else {
+    alert("Invalid login");
+  }
 }
 
-function logout(){
-  currentUser=null;
-  location.reload();
-}
+function addJob(){
+  if(!currentUser) return alert("Login required");
 
-function postJob(){
-  if(!currentUser) return alert("Login first");
-  jobs.push({
-    title:title.value,
-    company:company.value,
-    category:jobCategory.value,
-    desc:desc.value,
-    link:link.value
-  });
-  localStorage.setItem("jobs",JSON.stringify(jobs));
+  let job = {
+    title: title.value,
+    company: company.value,
+    category: jobCat.value,
+    desc: desc.value,
+    link: link.value
+  };
+
+  jobs.push(job);
+  localStorage.setItem("jobs", JSON.stringify(jobs));
   alert("Job posted");
   renderJobs();
 }
 
 function renderJobs(){
-  let q = document.getElementById('search').value?.toLowerCase()||"";
-  let cat = document.getElementById('category').value;
-  let box = document.getElementById('jobs');
-  box.innerHTML="";
+  let box = document.getElementById("jobs");
+  let q = search.value ? search.value.toLowerCase() : "";
+  let cat = category.value;
+
+  box.innerHTML = "";
 
   jobs.filter(j=>{
-    return (cat=='all'||j.category==cat) && j.title.toLowerCase().includes(q);
+    return (cat=="all" || j.category==cat) && j.title.toLowerCase().includes(q);
   }).forEach((j,i)=>{
-    box.innerHTML+=`
+    box.innerHTML += `
       <div class='card'>
         <h4>${j.title}</h4>
         <p>${j.company} | ${j.category}</p>
@@ -122,23 +132,29 @@ function renderJobs(){
 
 function saveJob(i){
   saved.push(jobs[i]);
-  localStorage.setItem("saved",JSON.stringify(saved));
-  alert("Saved");
+  localStorage.setItem("saved", JSON.stringify(saved));
+  loadSaved();
 }
 
 function loadSaved(){
-  let box=document.getElementById('savedJobs');
-  box.innerHTML="";
+  let box = document.getElementById("savedList");
+  box.innerHTML = "";
+
   saved.forEach(j=>{
-    box.innerHTML+=`<div class='card'><h4>${j.title}</h4><p>${j.company}</p></div>`;
+    box.innerHTML += `<div class='card'><h4>${j.title}</h4><p>${j.company}</p></div>`;
   });
 }
 
-setInterval(loadSaved,1000);
+loadSaved();
+showPage('home');
 
-// PWA SW
+// PWA SERVICE WORKER
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js');
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .then(()=>console.log("SW registered"))
+      .catch(err=>console.log(err));
+  });
 }
 </script></body>
 </html>
