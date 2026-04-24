@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kenya Jobs & Side Hustles</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f4f4;
+    }
+    header {
+      background: #0a66c2;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      padding: 20px;
+    }
+    .job {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .job h3 {
+      margin: 0;
+    }
+    .job p {
+      margin: 5px 0;
+    }
+    .btn {
+      display: inline-block;
+      padding: 8px 12px;
+      background: #0a66c2;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    form {
+      background: white;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body><header>
+  <h1>Kenya Jobs & Side Hustles</h1>
+  <p>Find daily jobs, gigs & opportunities</p>
+</header><div class="container">  <h2>Latest Opportunities</h2>  <div id="jobs"></div>  <h2>Post a Job</h2>
+  <form id="jobForm">
+    <input type="text" id="title" placeholder="Job Title" required>
+    <input type="text" id="company" placeholder="Company / Person" required>
+    <textarea id="description" placeholder="Job Description" required></textarea>
+    <input type="text" id="link" placeholder="Application Link" required>
+    <button type="submit" class="btn">Post Job</button>
+  </form></div><script>
+  const jobsContainer = document.getElementById('jobs');
+  const jobForm = document.getElementById('jobForm');
+
+  let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+
+  function displayJobs() {
+    jobsContainer.innerHTML = '';
+    jobs.forEach((job, index) => {
+      jobsContainer.innerHTML += `
+        <div class="job">
+          <h3>${job.title}</h3>
+          <p><strong>${job.company}</strong></p>
+          <p>${job.description}</p>
+          <a href="${job.link}" target="_blank" class="btn">Apply</a>
+        </div>
+      `;
+    });
+  }
+
+  jobForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const job = {
+      title: document.getElementById('title').value,
+      company: document.getElementById('company').value,
+      description: document.getElementById('description').value,
+      link: document.getElementById('link').value
+    };
+
+    jobs.push(job);
+    localStorage.setItem('jobs', JSON.stringify(jobs));
+
+    jobForm.reset();
+    displayJobs();
+  });
+
+  displayJobs();
+</script></body>
+</html>
