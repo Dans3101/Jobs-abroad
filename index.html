@@ -1,73 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Website</title>
+  <title>Danscom App</title>
 
   <style>
-    #appPopup {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 300px;
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-      z-index: 9999;
+    body{
       font-family: Arial;
+      text-align:center;
+      padding-top:100px;
+      background:#f5f5f5;
     }
 
-    #appPopup button {
-      background: green;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
+    #popup{
+      display:none;
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      width:300px;
+      background:white;
+      padding:20px;
+      border-radius:15px;
+      box-shadow:0 0 15px rgba(0,0,0,0.3);
     }
 
-    #closeBtn {
-      float: right;
-      cursor: pointer;
-      color: red;
-      font-weight: bold;
+    button{
+      background:green;
+      color:white;
+      border:none;
+      padding:12px;
+      border-radius:8px;
+      cursor:pointer;
+      width:100%;
+    }
+
+    .close{
+      float:right;
+      cursor:pointer;
+      color:red;
+      font-weight:bold;
     }
   </style>
 </head>
 
 <body>
 
-<h1>Welcome to My Website</h1>
+<h1>Welcome to Danscom</h1>
 
-<div id="appPopup">
-  <span id="closeBtn">X</span>
+<p>Best experience on our mobile app.</p>
 
-  <h3>Download Our App</h3>
+<div id="popup">
 
-  <p>Get a better experience using our mobile app.</p>
+<span class="close" onclick="closePopup()">X</span>
 
-  <button onclick="downloadApp()">
-    Download App
-  </button>
+<h3>Download Our App</h3>
+
+<p>Install the Danscom App now.</p>
+
+<button onclick="downloadApp()">
+Download App
+</button>
+
 </div>
 
 <script>
-  // Show popup after 3 seconds
-  setTimeout(() => {
-    document.getElementById("appPopup").style.display = "block";
-  }, 3000);
 
-  // Close popup
-  document.getElementById("closeBtn").onclick = function() {
-    document.getElementById("appPopup").style.display = "none";
-  }
+setTimeout(() => {
+  document.getElementById("popup").style.display = "block";
+}, 3000);
 
-  // Download button action
-  function downloadApp() {
-    window.location.href =
-    "https://play.google.com/store/apps/details?id=com.example.app";
-  }
+function closePopup(){
+  document.getElementById("popup").style.display = "none";
+}
+
+function downloadApp(){
+
+  // Replace with your APK or Play Store link
+  window.location.href =
+  "https://your-app-link.com";
+
+}
+
 </script>
 
 </body>
