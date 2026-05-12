@@ -1,160 +1,74 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kenya Jobs & Side Hustles</title>  <!-- PWA LINKS -->  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0a66c2">  <style>
-    body{font-family:Arial;margin:0;background:#f4f4f4}
-    header{background:#0a66c2;color:white;padding:15px;text-align:center}
-    nav{display:flex;justify-content:space-around;background:white;padding:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-    nav button{border:none;background:none;font-weight:bold;cursor:pointer}
-    .container{padding:15px}
-    .card{background:white;padding:15px;margin-bottom:12px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-    .btn{background:#0a66c2;color:white;padding:8px 12px;border:none;border-radius:5px;cursor:pointer;text-decoration:none;display:inline-block;margin-top:5px}
-    input,textarea,select{width:100%;padding:10px;margin:6px 0}
-    .hidden{display:none}
-  </style></head>
-<body><header>
-  <h2>Kenya Jobs & Side Hustles</h2>
-</header><nav>
-  <button onclick="showPage('home')">Jobs</button>
-  <button onclick="showPage('post')">Post Job</button>
-  <button onclick="showPage('saved')">Saved</button>
-  <button onclick="showPage('auth')">Login</button>
-</nav><div class="container"><!-- AUTH --><div id="auth" class="card">
-  <h3>Login / Register</h3>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button class="btn" onclick="registerUser()">Register</button>
-  <button class="btn" onclick="loginUser()">Login</button>
-</div><!-- HOME --><div id="home" class="hidden">
-  <h3>Available Jobs</h3>
-  <input id="search" placeholder="Search jobs..." onkeyup="renderJobs()">
-  <select id="category" onchange="renderJobs()">
-    <option value="all">All</option>
-    <option>IT</option>
-    <option>Marketing</option>
-    <option>Remote</option>
-    <option>Internship</option>
-  </select>
-  <div id="jobs"></div>
-</div><!-- POST --><div id="post" class="hidden card">
-  <h3>Post Job</h3>
-  <input id="title" placeholder="Job Title">
-  <input id="company" placeholder="Company">
-  <select id="jobCat">
-    <option>IT</option>
-    <option>Marketing</option>
-    <option>Remote</option>
-    <option>Internship</option>
-  </select>
-  <textarea id="desc" placeholder="Description"></textarea>
-  <input id="link" placeholder="Apply Link">
-  <button class="btn" onclick="addJob()">Post Job</button>
-</div><!-- SAVED --><div id="saved" class="hidden">
-  <h3>Saved Jobs</h3>
-  <div id="savedList"></div>
-</div></div><script>
-let jobs = JSON.parse(localStorage.getItem("jobs")) || [];
-let saved = JSON.parse(localStorage.getItem("saved")) || [];
-let currentUser = JSON.parse(localStorage.getItem("user")) || null;
+  <title>My Website</title>
 
-function showPage(id){
-  document.querySelectorAll(".container > div").forEach(d=>d.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
-}
+  <style>
+    #appPopup {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 300px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      z-index: 9999;
+      font-family: Arial;
+    }
 
-function registerUser(){
-  let email = document.getElementById("email").value;
-  let password = document.getElementById("password").value;
+    #appPopup button {
+      background: green;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-  if(!email || !password) return alert("Fill all fields");
+    #closeBtn {
+      float: right;
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
 
-  let user = {email,password};
-  localStorage.setItem("user", JSON.stringify(user));
-  alert("Registered successfully");
-}
+<body>
 
-function loginUser(){
-  let email = document.getElementById("email").value;
-  let password = document.getElementById("password").value;
+<h1>Welcome to My Website</h1>
 
-  let user = JSON.parse(localStorage.getItem("user"));
+<div id="appPopup">
+  <span id="closeBtn">X</span>
 
-  if(user && user.email === email && user.password === password){
-    currentUser = user;
-    alert("Login successful");
-    showPage('home');
-    renderJobs();
-  } else {
-    alert("Invalid login");
+  <h3>Download Our App</h3>
+
+  <p>Get a better experience using our mobile app.</p>
+
+  <button onclick="downloadApp()">
+    Download App
+  </button>
+</div>
+
+<script>
+  // Show popup after 3 seconds
+  setTimeout(() => {
+    document.getElementById("appPopup").style.display = "block";
+  }, 3000);
+
+  // Close popup
+  document.getElementById("closeBtn").onclick = function() {
+    document.getElementById("appPopup").style.display = "none";
   }
-}
 
-function addJob(){
-  if(!currentUser) return alert("Login required");
+  // Download button action
+  function downloadApp() {
+    window.location.href =
+    "https://play.google.com/store/apps/details?id=com.example.app";
+  }
+</script>
 
-  let job = {
-    title: title.value,
-    company: company.value,
-    category: jobCat.value,
-    desc: desc.value,
-    link: link.value
-  };
-
-  jobs.push(job);
-  localStorage.setItem("jobs", JSON.stringify(jobs));
-  alert("Job posted");
-  renderJobs();
-}
-
-function renderJobs(){
-  let box = document.getElementById("jobs");
-  let q = search.value ? search.value.toLowerCase() : "";
-  let cat = category.value;
-
-  box.innerHTML = "";
-
-  jobs.filter(j=>{
-    return (cat=="all" || j.category==cat) && j.title.toLowerCase().includes(q);
-  }).forEach((j,i)=>{
-    box.innerHTML += `
-      <div class='card'>
-        <h4>${j.title}</h4>
-        <p>${j.company} | ${j.category}</p>
-        <p>${j.desc}</p>
-        <a class='btn' href='${j.link}' target='_blank'>Apply</a>
-        <button class='btn' onclick='saveJob(${i})'>Save</button>
-      </div>
-    `;
-  });
-}
-
-function saveJob(i){
-  saved.push(jobs[i]);
-  localStorage.setItem("saved", JSON.stringify(saved));
-  loadSaved();
-}
-
-function loadSaved(){
-  let box = document.getElementById("savedList");
-  box.innerHTML = "";
-
-  saved.forEach(j=>{
-    box.innerHTML += `<div class='card'><h4>${j.title}</h4><p>${j.company}</p></div>`;
-  });
-}
-
-loadSaved();
-showPage('home');
-
-// PWA SERVICE WORKER
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js')
-      .then(()=>console.log("SW registered"))
-      .catch(err=>console.log(err));
-  });
-}
-</script></body>
+</body>
 </html>
